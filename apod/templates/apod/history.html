@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NASA APOD - HISTORY</title>
+
+    <style>
+        body {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        img, video, iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        p {
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .pagination {
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+        }
+
+        .pagination strong {
+            margin: 0 5px;
+            font-size: 18px;
+        }
+    </style>
+  
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>APOD HISTORY</h1>
+
+    <a href="/">Back to Home ||</a>
+    <a href = "/favourites/">View Favourites</a>
+
+    <br><br>
+    <form method="GET">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search...">
+        
+        <select name="sort" >
+            <option value = "newest" 
+            {% if sort == "newest" %} 
+            selected
+            {% endif %}> 
+            Newest To Oldest
+        </option>
+        
+        <option value = "oldest" 
+        {% if sort == "oldest" %} 
+        selected
+        {% endif %} > 
+        Oldest To Newest
+        </option>
+
+        <option value="title"
+        {% if sort == "title" %}
+        selected
+        {% endif %}>
+        Sort By Title (A -> Z)
+        </option>
+
+        <option value="title1"
+        {% if sort == "title1" %}
+        selected
+        {% endif %}>
+        Sort By Title (Z -> A)
+        </option>
+        
+    </select>
+        <button type="submit">Search</button>
+    </form>
+ 
+{% if page_obj %}
+    {% for apod in page_obj %}
+
+    <div class="section">
+        <a href="{% url 'detail' apod.id %}">
+            <h2>{{ apod.title }}</h2>
+        </a>
+
+    {% if apod.favourite %}
+        <a href="{% url 'toggle_favourite' apod.id %}?page={{ page_obj.number }}?source=favourites">❤️</a>
+    {% else %}
+        <a href="{% url 'toggle_favourite' apod.id %}?page={{ page_obj.number }}?source=history">🤍</a>
+    {% endif %}
+
+        <h3>{{ apod.date }}</h3>
+    </div> 
+    
+    <div class="section">
+        {% if apod.media_type == "image" %}
+            <img src="{{ apod.url }}" width="400">
+        
+        {% elif apod.media_type == "video" %}
+            {% if "youtube" in apod.url or "youtu.be" in apod.url %}
+                <iframe width="600" height="400"
+                        src="{{ apod.url }}"
+                        frameborder="0" allowfullscreen>
+                </iframe>
+            {% else %}
+                <video width="400" controls>
+                    <source src="{{ apod.url }}" type="video/mp4">
+                </video>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <p>{{ apod.explanation }}</p>
+    </div>    
+
+    {% endfor %}
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+
+        <!-- Previous -->
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&sort={{ sort }}">Previous</a>
+        {% endif %}
+
+        <br><br>
+
+        <!-- Page Info -->
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        <br><br>
+
+        <!-- Page Numbers -->
+        {% for p in page_obj.paginator.page_range %}
+            {% if p == page_obj.number %}
+                <strong>{{ p }}</strong>
+            {% else %}
+                <a href="?page={{ p }}&q={{ query }}&sort={{ sort }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+
+        <br><br>
+
+        <!-- Next -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&sort={{ sort }}">Next</a>
+        {% endif %}
+
+    </div>
+
+{% else %}
+    <p>No APOD history available.</p>
+{% endif %}
+
+</div>
+</body>
+</html>
