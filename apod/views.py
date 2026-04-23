@@ -206,4 +206,4 @@ def favourites(request) :
         "page_obj" : page_obj
     }
 
-    return render(request,"apod/history.html/", context)
+    return render(request,"apod/history.html/", context) 
