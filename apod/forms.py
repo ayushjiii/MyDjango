@@ -1,5 +1,8 @@
 from django import forms
 from .models import Apod
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
 
 class Note(forms.ModelForm):
         class Meta:
@@ -14,3 +17,11 @@ class Note(forms.ModelForm):
                 raise forms.ValidationError("Note cannot exceed 500 characters.")
             
             return note
+
+class SignUpForm(UserCreationForm) :
+     
+     class Meta :
+         
+         model = User
+         fields = ['username','password1','password2']
+

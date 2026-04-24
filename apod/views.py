@@ -3,7 +3,7 @@ from django.shortcuts import render , redirect ,get_object_or_404
 from datetime import date , datetime
 import requests
 from .models import Apod
-from .forms import Note
+from .forms import Note,SignUpForm
 from django.core.paginator import Paginator 
 from django.contrib import messages
 from django.db.models import Q
@@ -207,3 +207,24 @@ def favourites(request) :
     }
 
     return render(request,"apod/history.html/", context) 
+
+def signup_view(request) :
+    
+    if request.method == "POST" :
+        
+        form = SignUpForm(request.POST)
+        
+        if form.is_valid() :
+            form.save()
+            
+            return redirect("login")
+    
+    else :
+        
+        form = SignUpForm()
+        
+    context = {
+        "form" : form 
+    }
+    
+    return render (request, "registration/signup.html",context)
