@@ -211,14 +211,17 @@ def favourites(request) :
 def signup_view(request) :
     
     if request.method == "POST" :
-        
         form = SignUpForm(request.POST)
-        
-        if form.is_valid() :
+
+        if form.is_valid():
+            print("done")
             form.save()
-            
+        
             return redirect("login")
     
+        else : 
+            print("invalid")
+            
     else :
         
         form = SignUpForm()
