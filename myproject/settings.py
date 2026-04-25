@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+### ADMIN ACCOUNT PASS :::  TEST@123
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +33,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "apod",
+    'apod',
+    'axes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -117,5 +121,23 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+
+## Django Axes auth :
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'accounts/login/'
+
+AXES_FAILURE_LIMIT = 5
+AXES_RESET_ON_SUCCESS = True
+AXES_COOLOFF_TIME = 0.01  # hours
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+## while testing the axes will be disabled
+
+if  DEBUG :
+    AXES_ENABLED = False

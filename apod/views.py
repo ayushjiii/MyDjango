@@ -42,7 +42,7 @@ def home(request) :
     
     if selected_date:
         apod_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
-    
+        
     else:
         apod_date = date.today()
     
